@@ -28,8 +28,8 @@ def verify_py():
     result = result.decode("utf-8").strip()
 
     if result == "Hello World": #we would load this dynamically and use unit testing rather than plain testing
-        return "Passed"
+        return str(result).strip() + "\n_________________________________________\n" + "1 Test Passed"
     else:
-        return str(result).strip() + "\n" + "Failed"
+        return str(result).strip() + "\n_________________________________________\n" + "1 Test Failed"
 
 app.run()
