@@ -2,6 +2,8 @@ from flask import Flask, request
 import os
 import docker_controller
 
+import unittest
+
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
@@ -11,11 +13,23 @@ def home():
 
 
 @app.route('/run_py', methods=['POST'])
-def run_file():
+def run_py():
+    f = request.files['File']
+
+    result = docker_controller.run_container(f) #run code and return result
+
+    return result
+
+@app.route('/verify_py', methods=['POST']) #write a function that returns "Hello World"
+def verify_py():
     f = request.files['File']
 
     result = docker_controller.run_container(f)
+    result = result.decode("utf-8").strip()
 
-    return result
+    if result == "Hello World": #we would load this dynamically and use unit testing rather than plain testing
+        return "Passed"
+    else:
+        return str(result).strip() + "\n" + "Failed"
 
 app.run()
