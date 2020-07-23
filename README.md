@@ -5,7 +5,7 @@ Super Simple Remote Code Execution Engine Example
 
 Simple RCE. Built this primarily to figure out how to use the Docker API. In production would just Node.js for this but Python had better documentation for the Docker API.
 
-- To make this fully secure we would need to containerise the API, as well as add 
+- To make this fully secure we would need to containerise the API, as well as add dynamic limitations e.g. using `RestrictedPython`
 - Would also implement proper unit testing for a `verify` endpoint rather than just manual checking (Hence: Prototype)
 
 ### Requirements:
