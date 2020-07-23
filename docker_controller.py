@@ -33,8 +33,7 @@ def create_container(container_id):
         container.start()
 
         try:
-            container.wait(timeout=1)
-
+            container.wait(timeout=1) #prevents infinite loops - this would be made dynamic
         except:    
             print("Timed out")
             container.kill()
