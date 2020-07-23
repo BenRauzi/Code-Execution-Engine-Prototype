@@ -2,14 +2,8 @@
 
 FROM python
 
-#creating directory helloworld in container (linux machine)
-
 RUN mkdir c:\home
 
-#copying helloworld.py from local directory to container's helloworld folder
+COPY main.py /home/main.py
 
-COPY hello.py /home/hello.py
-
-#running helloworld.py in container
-
-CMD python /home/hello.py
+CMD python /home/main.py

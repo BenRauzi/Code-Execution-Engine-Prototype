@@ -1,6 +1,6 @@
 import os
 
-code = os.environ['id']
+uuid = os.environ['id']
 
-print(code)
-exec(open(f'b.py').read())
+file = open(f"{uuid}.py", "r").read()
+exec(file) #INCREDIBLY simple execution of file. This needs to be improved

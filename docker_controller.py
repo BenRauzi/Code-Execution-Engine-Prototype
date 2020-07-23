@@ -1,12 +1,12 @@
-import uuid
-import os
-import tarfile
-import docker
+import uuid, os, tarfile, docker
+import threading
+import time
+from requests.exceptions import ReadTimeout
 
-def copy_to(src, container):
+
+def load_file(src, container):
     cwd = os.getcwd()
-    src = cwd + "/" +  src
-
+    src = cwd + "/temp/" + src
 
     os.chdir(os.path.dirname(src))
     srcname = os.path.basename(src)
@@ -18,27 +18,53 @@ def copy_to(src, container):
         tar.close()
 
     data = open(src + '.tar', 'rb').read()
-    container.put_archive(os.path.dirname("/test.py"), data)
+    container.put_archive("/", data)
 
-def createContainer():       
-    try:
+    os.chdir("..")
+
+def create_container(container_id):       
+    try:    
         client = docker.DockerClient(base_url='tcp://127.0.0.1:2375')
 
-        container_id = uuid.uuid4()
         container = client.containers.create("pyimage:latest", command=None, environment={"id": f"{container_id}"}, name=container_id)
 
-        copy_to("b.py", container)
+        load_file(f"{container_id}.py", container)
 
         container.start()
-        container.wait()
-        
-        logs = container.logs()
-        print(logs)
 
-        container.kill()
+        try:
+            container.wait(timeout=1)
+
+        except:    
+            print("Timed out")
+            container.kill()
+        
+        logs = container.logs(tail=500)
+
+        container.remove() #tidy up container
 
         return logs
     except Exception as e:
-        print(e)
+        return e
 
+def create_file(file):
+    container_id = uuid.uuid4()
 
+    file.save(f"temp/{container_id}.py")
+
+    return container_id
+
+def clean_temp(container_id):
+    cwd = os.getcwd() 
+
+    os.remove(f"{cwd}/temp/{container_id}.py")
+    os.remove(f"{cwd}/temp/{container_id}.py.tar")
+
+def run_container(file):
+    container_id = create_file(file)
+
+    result = create_container(container_id)
+
+    clean_temp(container_id) #tidy up temp directory
+
+    return result
