@@ -13,9 +13,9 @@ Simple RCE. Built this primarily to figure out how to use the Docker API. In pro
 - `docker-py`
 - `Flask`
 
-```pip install docker``` and install Docker Desktop
-
-```pip install flask```
+- ```pip install docker```
+- ```pip install flask```
+- Install Docker Desktop
 
 ### Instructions
 
